@@ -14,6 +14,9 @@ public class AndroidLauncher extends AndroidApplication
     super.onCreate ( savedInstanceState ) ;
     AndroidApplicationConfiguration config = new AndroidApplicationConfiguration ( ) ;
 
+    config.hideStatusBar = true ;
+    config.useImmersiveMode = true ;
+    
     initialize ( new MainGame ( ) , config ) ;
   }
 }

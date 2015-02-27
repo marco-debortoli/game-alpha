@@ -1,20 +1,19 @@
 package ca.marco.game ;
 
-import ca.marco.game.screens.GameScreen ;
 import ca.marco.game.screens.MainMenu ;
 
 import com.badlogic.gdx.Game ;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch ;
 
 public class MainGame extends Game
 {
-  private SpriteBatch batch ;
+  
+  public final int SCREEN_X = 1280 ;
+  public final int SCREEN_Y = 768 ;
 
   @ Override
   public void create ( )
   {
-    batch = new SpriteBatch ( ) ;
-    this.setScreen ( new GameScreen ( this ) );
+    this.setScreen ( new MainMenu ( this ) );
   }
 
   @ Override
@@ -26,6 +25,5 @@ public class MainGame extends Game
   @ Override
   public void dispose ( )
   {
-    batch.dispose ( ) ;
   }
 }
