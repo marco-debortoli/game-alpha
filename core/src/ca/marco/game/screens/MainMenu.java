@@ -13,12 +13,13 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator ;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter ;
 import com.badlogic.gdx.math.Vector2 ;
 import com.badlogic.gdx.physics.box2d.World ;
+import com.badlogic.gdx.scenes.scene2d.InputEvent ;
+import com.badlogic.gdx.scenes.scene2d.InputListener ;
 import com.badlogic.gdx.scenes.scene2d.Stage ;
 import com.badlogic.gdx.scenes.scene2d.ui.Image ;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton ;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle ;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin ;
-import com.badlogic.gdx.utils.Scaling ;
 import com.badlogic.gdx.utils.viewport.StretchViewport ;
 
 public class MainMenu implements Screen
@@ -40,6 +41,9 @@ public class MainMenu implements Screen
 
   private RayHandler rayHandler ;
   private World world ;
+  
+  private Screen newScreen ;
+  private boolean fadeOut ;
 
   public MainMenu ( MainGame game )
   {
@@ -54,62 +58,109 @@ public class MainMenu implements Screen
     
     buttonStage = new Stage ( new StretchViewport ( game.SCREEN_X , game.SCREEN_Y ) ) ;
     Gdx.input.setInputProcessor ( buttonStage ) ;
+    
+    fadeOut = false ;
 
     // Skin
     skin = new Skin ( ) ;
     skin.add ( "button_up" , new Texture ( Gdx.files.internal ( "main_menu/green_button00.png" ) ) );
     skin.add ( "button_down" , new Texture ( Gdx.files.internal ( "main_menu/green_button01.png" ) ) );
+    skin.add ( "background" , new Texture ( Gdx.files.internal ( "main_menu/background_1.png" ) ) );
+    skin.add ( "moon_full" , new Texture ( Gdx.files.internal ( "main_menu/moon_full.png" ) ) ) ;
+    skin.add ( "foreground" , new Texture ( Gdx.files.internal ( "main_menu/level.png" ) ) ) ;
+    skin.add ( "ufo" , new Texture ( Gdx.files.internal ( "main_menu/ufocrash.png" ) ) ) ;
+    skin.add ( "p1_front" , new Texture ( Gdx.files.internal ( "main_menu/p1_front.png" ) ) ) ;
     
     // Fonts
-    generator = new FreeTypeFontGenerator ( Gdx.files.internal ( "fonts/font_1.ttf" ) ) ;
-    parameter = new FreeTypeFontParameter ( ) ;
-    parameter.size = 36 ;
+    generator = ScreenUtilities.getFontGenerator ( "fonts/font_1.ttf" ) ;
+    parameter = ScreenUtilities.getFontParameter ( 32 ) ;
 
     // Background Image
-    imageBackground = new Image (
-        new Texture ( Gdx.files.internal ( "main_menu/background_1.png" ) ) ) ;
+    imageBackground = new Image ( skin.getDrawable ( "background" ) ) ;
     
     imageBackground.setSize ( stage.getViewport ( ).getWorldWidth ( ) , stage.getViewport ( ).getWorldHeight ( ) );
     
     // Moon
-    moon = new Image ( new Texture ( Gdx.files.internal ( "main_menu/moon_full.png" ) ) ) ;
-    moon.setScaling ( Scaling.fill ) ;
+    moon = new Image ( skin.getDrawable ( "moon_full" ) ) ;
     moon.setPosition ( 1000 - moon.getWidth ( ) / 2 , 
         stage.getViewport ( ).getWorldHeight ( ) - ( 135 + moon.getHeight ( ) / 2 ) );
     
-    moon.setSize ( stage.getViewport ( ).getWorldWidth ( ) / 15.06f , stage.getViewport ( ).getWorldHeight ( ) / 9.03f );
+    moon.setSize ( 85 , 85 );
     
     // Foreground
-    foreground = new Image ( new Texture ( Gdx.files.internal ( "main_menu/level.png" ) ) ) ;
-    foreground.setScaling ( Scaling.fill );
+    foreground = new Image ( skin.getDrawable ( "foreground" ) ) ;
     foreground.setWidth ( stage.getViewport ( ).getWorldWidth ( ) );
     foreground.setPosition ( 0 , 50 );
     
     // UFO
-    ufo = new Image ( new Texture ( Gdx.files.internal ( "main_menu/ufocrash.png" ) ) ) ;
+    ufo = new Image ( skin.getDrawable ( "ufo" ) ) ;
     ufo.setPosition ( 70 , 50 );
     
     // Character
-    character = new Image ( new Texture ( Gdx.files.internal ( "main_menu/p1_front.png" ) ) ) ;
+    character = new Image ( skin.getDrawable ( "p1_front" ) ) ;
     character.setPosition ( ufo.getX ( ) + ufo.getWidth ( ) + 50 , 70 );
     
     // Buttons
-    ImageTextButtonStyle button_style = new ImageTextButtonStyle ( ) ;
-    button_style.up = skin.getDrawable ( "button_up" );
-    button_style.down = skin.getDrawable ( "button_down" ) ;
-    button_style.font = generator.generateFont ( parameter ) ;
+    ImageTextButtonStyle buttonStyle = ScreenUtilities.getImageTextButtonStyle ( skin.getDrawable ( "button_up" ) ,
+        skin.getDrawable ( "button_down" ) , generator.generateFont ( parameter ) ) ;
     
-    singleButton = new ImageTextButton ( "Single Player" , button_style ) ;
-    singleButton.setPosition ( 0 , 625 );
-    singleButton.setSize ( 400 , 100 );
+    singleButton = ScreenUtilities.getImageTextButton ( "Single Player" , buttonStyle ,
+        new Vector2 ( 0 , 625 ) , new Vector2 ( 400 , 100 ) ) ;
     
-    multiButton = new ImageTextButton ( "Multi Player" , button_style ) ;
-    multiButton.setPosition ( 0 , 500 );
-    multiButton.setSize ( 400 , 100 );
+    multiButton = ScreenUtilities.getImageTextButton ( "Multi Player" , buttonStyle ,
+        new Vector2 ( 0 , 500 ) , new Vector2 ( 400 , 100 ) ) ;
     
-    optionsButton = new ImageTextButton ( "Options" , button_style ) ;
-    optionsButton.setPosition ( 0 , 375 );
-    optionsButton.setSize ( 300 , 100 );
+    optionsButton = ScreenUtilities.getImageTextButton ( "Options" , buttonStyle ,
+        new Vector2 ( 0 , 375 ) , new Vector2 ( 300 , 100 ) ) ;
+    
+    // Input Processors
+    singleButton.addListener ( new InputListener ( )
+    {
+      
+      public boolean touchDown ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        return true ;
+      }
+      
+      public void touchUp ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        fadeOut = true ;
+        newScreen = new SinglePlayerScreen ( game ) ;
+      }
+      
+    } ) ;
+    
+    multiButton.addListener ( new InputListener ( )
+    {
+      
+      public boolean touchDown ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        return true ;
+      }
+      
+      public void touchUp ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        fadeOut = true ;
+        newScreen = new MultiPlayerScreen ( game ) ;
+      }
+      
+    } ) ;
+    
+    optionsButton.addListener ( new InputListener ( )
+    {
+      
+      public boolean touchDown ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        return true ;
+      }
+      
+      public void touchUp ( InputEvent event , float x , float y , int pointer , int button )
+      {
+        fadeOut = true ;
+        newScreen = new OptionsScreen ( game ) ;
+      }
+      
+    } ) ;
 
     // Add the actors
     stage.addActor ( imageBackground ) ;
@@ -147,6 +198,13 @@ public class MainMenu implements Screen
     Gdx.graphics.getGL20 ( ).glClearColor ( 49 / 255f , 67 / 255f , 102 / 255f , 0.5f ) ;
     Gdx.graphics.getGL20 ( ).glClear ( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT ) ;
 
+    if ( fadeOut )
+    {
+      stage.addAction ( ScreenUtilities.getFadeOutToScreen ( game , newScreen , 2f )  ) ;
+      buttonStage.addAction ( ScreenUtilities.getFadeOut ( 2f ) );
+      fadeOut = false ;
+    }
+    
     world.step ( delta , 8 , 3 ) ;
     rayHandler.setCombinedMatrix ( stage.getCamera ( ).combined ) ;
 
