@@ -2,34 +2,30 @@ package ca.marco.game.model;
 
 import com.badlogic.gdx.graphics.Texture ;
 import com.badlogic.gdx.math.Vector2 ;
+import com.badlogic.gdx.physics.box2d.FixtureDef ;
+import com.badlogic.gdx.physics.box2d.PolygonShape ;
+import com.badlogic.gdx.physics.box2d.World ;
 
 public class Player extends AbstractMovingImageObject
 {
+ 
 
-  public Player ( Vector2 position, float mass, Vector2 size , Texture image )
+  public Player ( World world , Vector2 position, float mass, Vector2 velocity, Vector2 size , Texture image )
   {
-    super ( position , mass, size , image ) ;
-  }
-  
-  public Player ( Vector2 position , float mass, Vector2 size , 
-      Vector2 force , Vector2 velocity , Vector2 acceleration , Texture image )
-  {
-    super ( position , mass, size , force , velocity, acceleration , image ) ;
-  }
-  
-  public void update ( float time ) 
-  {
+    super ( world, position , mass, velocity, size , image ) ;
     
-    this.updateAcceleration ( time ) ;
+    PolygonShape polygon = new PolygonShape ( ) ;
+    polygon.setAsBox ( size.x / 2, size.y / 2 ) ;
+
+    FixtureDef fixture = new FixtureDef();
+    fixture.shape = polygon;
+    fixture.density = this.mass / (size.x * size.y); 
+    fixture.friction = 0.4f;
+    fixture.restitution = 0;
     
-    // Update velocity
-    this.updateVelocity ( time ) ;
+    this.body.createFixture ( fixture ) ;
     
-    // Update position
-    this.updatePosition ( time ) ;
-    
-    // Forces don't need updating
-    this.updateForce ( ) ;
+    polygon.dispose ( ) ;
     
   }
 

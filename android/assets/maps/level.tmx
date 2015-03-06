@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="19" height="5" tilewidth="70" tileheight="70" nextobjectid="2">
+ <tileset firstgid="1" name="General" tilewidth="70" tileheight="70">
+  <tile id="0">
+   <image width="70" height="70" source="grassMid.png"/>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 2" width="19" height="5">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFpABGKmIABHQAFA==
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="1" x="0" y="280" width="1330" height="70"/>
+ </objectgroup>
+</map>

@@ -54,9 +54,9 @@ public class MainMenu implements Screen
   public void show ( )
   {
     // Stage setup
-    stage = new Stage ( new StretchViewport ( game.SCREEN_X , game.SCREEN_Y ) ) ;
+    stage = new Stage ( new StretchViewport ( game.ABSOLUTE_SCREEN_X , game.ABSOLUTE_SCREEN_Y ) ) ;
     
-    buttonStage = new Stage ( new StretchViewport ( game.SCREEN_X , game.SCREEN_Y ) ) ;
+    buttonStage = new Stage ( new StretchViewport ( game.ABSOLUTE_SCREEN_X , game.ABSOLUTE_SCREEN_Y ) ) ;
     Gdx.input.setInputProcessor ( buttonStage ) ;
     
     fadeOut = false ;
@@ -90,15 +90,15 @@ public class MainMenu implements Screen
     // Foreground
     foreground = new Image ( skin.getDrawable ( "foreground" ) ) ;
     foreground.setWidth ( stage.getViewport ( ).getWorldWidth ( ) );
-    foreground.setPosition ( 0 , 50 );
+    foreground.setPosition ( 0 , 0 );
     
     // UFO
     ufo = new Image ( skin.getDrawable ( "ufo" ) ) ;
-    ufo.setPosition ( 70 , 50 );
+    ufo.setPosition ( 70 , 40 );
     
     // Character
     character = new Image ( skin.getDrawable ( "p1_front" ) ) ;
-    character.setPosition ( ufo.getX ( ) + ufo.getWidth ( ) + 50 , 70 );
+    character.setPosition ( ufo.getX ( ) + ufo.getWidth ( ) + 50 , 45 );
     
     // Buttons
     ImageTextButtonStyle buttonStyle = ScreenUtilities.getImageTextButtonStyle ( skin.getDrawable ( "button_up" ) ,
@@ -125,7 +125,7 @@ public class MainMenu implements Screen
       public void touchUp ( InputEvent event , float x , float y , int pointer , int button )
       {
         fadeOut = true ;
-        newScreen = new SinglePlayerScreen ( game ) ;
+        newScreen = new GameScreen ( game ) ;
       }
       
     } ) ;
@@ -205,7 +205,7 @@ public class MainMenu implements Screen
       fadeOut = false ;
     }
     
-    world.step ( delta , 8 , 3 ) ;
+    world.step ( delta , game.VELOCITY_ITERATIONS , game.POSITION_ITERATIONS ) ;
     rayHandler.setCombinedMatrix ( stage.getCamera ( ).combined ) ;
 
     stage.act ( delta ) ;
@@ -228,21 +228,21 @@ public class MainMenu implements Screen
   @ Override
   public void pause ( )
   {
-    // Do nothing
+    // Do nothing for now
 
   }
 
   @ Override
   public void resume ( )
   {
-    // Do nothing
+    // Do nothing for now
 
   }
 
   @ Override
   public void hide ( )
   {
-    // Do nothing
+    // Do nothing for now
 
   }
 

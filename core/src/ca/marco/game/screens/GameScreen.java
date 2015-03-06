@@ -1,19 +1,19 @@
 package ca.marco.game.screens;
 
-import ca.marco.game.world.Renderer ;
-import ca.marco.game.world.SingleWorld ;
+import ca.marco.game.MainGame ;
+import ca.marco.game.world.TestRenderer ;
+import ca.marco.game.world.TestWorld ;
 
-import com.badlogic.gdx.Game ;
 import com.badlogic.gdx.Screen ;
 
 public class GameScreen implements Screen
 {
   
-  private Game game ;
-  private Renderer renderer ;
-  private SingleWorld world ;
+  private MainGame game ;
+  private TestRenderer renderer ;
+  private TestWorld world ;
   
-  public GameScreen ( Game game )
+  public GameScreen ( MainGame game )
   {
     this.game = game ;
   }
@@ -25,16 +25,16 @@ public class GameScreen implements Screen
     // Start music
     // Create game objects
     
-    world = new SingleWorld ( ) ;
-    this.renderer = new Renderer ( world ) ;
+    world = new TestWorld ( game ) ;
+    this.renderer = new TestRenderer ( world , game ) ;
     
   }
 
   @ Override
   public void render ( float delta )
   {
-    this.world.update ( delta ) ;
-    this.renderer.render ( );
+   // this.world.update ( delta ) ;
+    this.renderer.render ( delta );
     
   }
 

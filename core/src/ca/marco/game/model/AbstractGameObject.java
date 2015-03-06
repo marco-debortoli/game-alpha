@@ -1,69 +1,50 @@
 package ca.marco.game.model;
 
 import com.badlogic.gdx.math.Vector2 ;
+import com.badlogic.gdx.physics.box2d.Body ;
+import com.badlogic.gdx.physics.box2d.BodyDef ;
 
 public abstract class AbstractGameObject
 {
 
-  protected Vector2 position ;
   protected Vector2 size ;
   protected float mass ;
+
+  protected Body body ;
+  protected BodyDef bodyDef ;
   
-  public AbstractGameObject ( )
+  public AbstractGameObject ( Vector2 position , Vector2 size , float mass )
   {
-    this.position = new Vector2 ( 0 , 0 ) ;
-    this.mass = 0 ;
-  }
-  
-  public AbstractGameObject ( Vector2 position , float mass, Vector2 size )
-  {
-    this.position = position ;
-    this.mass = mass ;
+    bodyDef = new BodyDef ( ) ;
+    bodyDef.position.set ( position ) ;
+    
     this.size = size ;
+    this.mass = mass ;
+    
   }
   
   // Position
   
   public Vector2 getPosition ( ) 
   {
-    return this.position ;
+    return this.body.getPosition ( ) ;
   }
   
   public float getPositionX ( )
   {
-    return this.position.x ;
+    return this.body.getPosition ( ).x ;
   }
   
   public float getPositionY ( )
   {
-    return this.position.y ;
+    return this.body.getPosition ( ).y ;
   }
-  
-  public void setPosition ( Vector2 new_position )
-  {
-    this.position = new_position ;
-  }
-  
-  public void setPositionX ( float new_position )
-  {
-    this.position.x = new_position ;
-  }
-  
-  public void setPositionY ( float new_position )
-  {
-    this.position.y = new_position ;
-  }
-  
+ 
   // Mass
   
   public float getMass ( )
   {
     return this.mass ;
-  }
-  
-  public void setMass ( float mass )
-  {
-    this.mass = mass ;
   }
   
   // Size
@@ -97,5 +78,13 @@ public abstract class AbstractGameObject
   {
     this.size.y = height ;
   }
+  
+  // Body
+  
+  public Body getBody ( )
+  {
+    return this.body ;
+  }
+  
   
 }
